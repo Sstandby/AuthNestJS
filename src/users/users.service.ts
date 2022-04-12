@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 // Interfaz de cada usuario
 import { User } from './users.entity';
+// Roles
+import { Role } from '../roles/role.enum';
 
 @Injectable()
 export class UsersService {
@@ -9,14 +11,15 @@ export class UsersService {
       id: 1,
       username: 'common_user',
       password: '1234',
+      role: Role.User,
     },
     {
-      id: 2,
+      id: 1,
       username: 'administrador',
       password: '1111',
+      role: Role.Admin,
     },
   ];
-
   // Buscar usuario por username
   async consultar_usuario(username: string): Promise<User | undefined> {
     return this.users.find((user) => user.username === username);
