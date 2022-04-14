@@ -10,12 +10,13 @@ import {
   UseGuards,
   ParseIntPipe,
 } from '@nestjs/common';
-import { LocalAuthGuard } from './auth/local-auth.guard';
+import { LocalAuthGuard } from './auth/guards/local-auth.guard';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { RolesGuard } from './roles/roles.guard';
 import { AuthService } from './auth/auth.service';
 import { UsersService } from './users/users.service';
 import { Role } from './roles/role.enum';
 import { Roles } from './roles/roles.decorator';
-import { Public } from './auth/auth.decorator';
 
 @Controller()
 export class AppController {
@@ -25,31 +26,38 @@ export class AppController {
     private usersService: UsersService,
   ) {}
 
-  @Public()
+  @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   async login(@Request() req) {
     return this.authService.login(req.user);
   }
 
   @Get('profile')
+  @Roles(Role.Admin, Role.User)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   getProfile(@Request() req) {
     return req.user;
   }
 
   @Patch('crear_users')
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   createUser(@Body() body) {
     // return body;
     // return `Crear un jugador: ${body.name} y juega de ${body.position}`;
     return this.usersService.crear_usuario(body);
   }
 
-  @Roles(Role.Admin)
   @Get('search/:id')
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   getSearch(@Param('id', ParseIntPipe) id) {
     return this.usersService.consultar_id(id);
   }
 
   @Delete('eliminar/:id')
+  @Roles(Role.Admin)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   getEliminar(@Param('id', ParseIntPipe) id) {
     return this.usersService.eliminar_id(id);
   }

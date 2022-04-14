@@ -11,13 +11,13 @@ export class UsersService {
       id: 1,
       username: 'common_user',
       password: '1234',
-      role: Role.User,
+      roles: [Role.User],
     },
     {
       id: 1,
       username: 'administrador',
       password: '1111',
-      role: Role.Admin,
+      roles: [Role.Admin],
     },
   ];
   // Buscar usuario por username
