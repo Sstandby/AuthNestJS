@@ -25,19 +25,17 @@ export class AppController {
     private usersService: UsersService,
   ) {}
 
-  @UseGuards(LocalAuthGuard)
+  @Public()
   @Post('auth/login')
   async login(@Request() req) {
     return this.authService.login(req.user);
   }
 
-  @Public()
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
   }
 
-  @Public()
   @Patch('crear_users')
   createUser(@Body() body) {
     // return body;
@@ -45,14 +43,12 @@ export class AppController {
     return this.usersService.crear_usuario(body);
   }
 
-  @Public()
   @Roles(Role.Admin)
   @Get('search/:id')
   getSearch(@Param('id', ParseIntPipe) id) {
     return this.usersService.consultar_id(id);
   }
 
-  @Public()
   @Delete('eliminar/:id')
   getEliminar(@Param('id', ParseIntPipe) id) {
     return this.usersService.eliminar_id(id);
