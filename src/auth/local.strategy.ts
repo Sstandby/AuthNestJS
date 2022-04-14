@@ -19,8 +19,9 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     request: Request,
   ): Promise<any> {
     const contextId = ContextIdFactory.getByRequest(request);
-    const authService: AuthService = await this.moduleRef.resolve(AuthService, contextId);
+    const authService = await this.moduleRef.resolve(AuthService, contextId);
     const user = await this.authService.validar_usuario(username, password);
+    console.log('User: ', user);
     if (!user) {
       throw new UnauthorizedException();
     }
