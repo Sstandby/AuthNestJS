@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 // Interfaz de cada usuario
-import { User } from './users.entity';
+import { User } from './entities/users.entity';
 // Roles
 import { Role } from '../roles/role.enum';
 

@@ -1,13 +1,19 @@
-import { NestFactory, Reflector } from '@nestjs/core';
+import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
-import { LocalAuthGuard } from './auth/guards/local-auth.guard';
-import { RolesGuard } from './roles/roles.guard';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   //app.useGlobalGuards(new LocalAuthGuard(new Reflector()));
   //app.useGlobalGuards(new RolesGuard(new Reflector()));
+  const config = new DocumentBuilder()
+    .setTitle('API Login')
+    .setDescription('The Login API description')
+    .setVersion('1.0')
+    .addTag('Login')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
   await app.listen(3000);
 }
 bootstrap();
