@@ -8,7 +8,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @ApiOperation({
-    summary: 'Iniciar sesion.',
+    summary: 'Login.',
   })
   @Post('/login')
   async login(@Request() req) {

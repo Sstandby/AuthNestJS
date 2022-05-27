@@ -34,45 +34,45 @@ export class AppController {
   @Roles(Role.Admin, Role.User)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({
-    summary: 'Ver el perfil actual en el que estas.',
+    summary: 'Returns user session information',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   getProfile(@Request() req): any {
     return req.user;
   }
 
-  @Patch('crear_users')
+  @Patch('createUsers')
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({
-    summary: 'Crear usuarios.',
+    summary: 'Create users.',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
     // return body;
     // return `Crear un jugador: ${body.name} y juega de ${body.position}`;
-    return this.usersService.crear_usuario(createUserDto);
+    return this.usersService.newUsers(createUserDto);
   }
 
   @Get('search/:id')
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({
-    summary: 'Buscar perfil mediante ID',
+    summary: 'Find a user by ID',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   getSearch(@Param('id', ParseIntPipe) id): Promise<User> {
-    return this.usersService.consultar_id(id);
+    return this.usersService.consultId(id);
   }
 
-  @Delete('eliminar/:id')
+  @Delete('delete/:id')
   @Roles(Role.Admin)
   @UseGuards(JwtAuthGuard, RolesGuard)
   @ApiOperation({
-    summary: 'Eliminar usuario mediante ID.',
+    summary: 'Delete a user by ID.',
   })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  getEliminar(@Param('id', ParseIntPipe) id): Promise<User[]> {
-    return this.usersService.eliminar_id(id);
+  getDelete(@Param('id', ParseIntPipe) id): Promise<User[]> {
+    return this.usersService.deleteId(id);
   }
 }
