@@ -1,46 +1,61 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
+
+import { compare, hash } from 'bcrypt';
+import { CreateUserDto, LoginUserDto, UpdatePasswordDto } from './dto/create-users.dto';
 import { Injectable } from '@nestjs/common';
-// Interfaz de cada usuario
-import { User } from './entities/users.entity';
-// Roles
-import { Role } from '../roles/role.enum';
+
+import { PrismaService } from '../prisma/prisma.service';
+import { User, Prisma } from '@prisma/client';
+
+interface FormatLogin extends Partial<User> {
+  login: string;
+}
 
 @Injectable()
 export class UsersService {
-  private users: User[] = [
-    {
-      id: 1,
-      username: 'common_user',
-      password: '1234',
-      roles: [Role.User],
-    },
-    {
-      id: 1,
-      username: 'administrador',
-      password: '1111',
-      roles: [Role.Admin],
-    },
-  ];
-  // Buscar usuario por username
-  async searchUsers(username: string): Promise<User | undefined> {
-    return this.users.find((user) => user.username === username);
-  }
+  constructor(private readonly prisma: PrismaService) {}
 
-  // Buscar usuario por id
-  async consultId(id: any): Promise<User | undefined> {
-    return this.users.find((user) => user.id === id);
-  }
-
-  // Eliminar usuario por id
-  async deleteId(id: any): Promise<User[] | undefined> {
-    return this.users.filter((user) => user.id !== id);
-  }
-
-  // crear usuario
-  async newUsers(user): Promise<User | undefined> {
-    this.users.push({
-      id: this.users.length + 1,
-      ...user,
+  // auth - Login
+  async authlogin({ login, password }: LoginUserDto): Promise<FormatLogin> {
+    const user = await this.prisma.user.findFirst({
+      where: {
+        login,
+      },
     });
-    return this.users[this.users.length - 1];
+    if (!user) {
+      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+    }
+
+    // comparing password
+    const equal = await compare(password, user.password);
+
+    if (!equal) {
+      throw new HttpException('invalid credentials', HttpStatus.UNAUTHORIZED)
+    }
+
+    const { password: p, ...rest } = user;
+    return rest;
+  }
+
+  async findByPayload({ login }: any): Promise<any> {
+    return await this.prisma.user.findFirst({
+      where: {
+        login,
+      },
+    });
+  }
+
+  async createUser(userDto: CreateUserDto): Promise<any> {
+    return await this.prisma.user.create({
+      ...userDto,
+      role: 'USER' as const,
+      password: await hash(userDto.password, 10),
+    });
+  }
+
+  async deleteUser(where: Prisma.UserWhereUniqueInput): Promise<User> {
+    return this.prisma.user.delete({
+      where,
+    });
   }
 }

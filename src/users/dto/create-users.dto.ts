@@ -16,24 +16,27 @@ export class CreateUserDto {
   @ApiProperty({
     description: 'Id del usuario.',
   })
-  readonly id: number;
+  id: number;
 
   @IsString()
   @ApiProperty({
     description: 'username del usuario registrado.',
   })
-  readonly name: string;
+  name: string;
 
   @IsString()
   @ApiProperty({
     description: 'Crear password del usuario registrado.',
   })
-  readonly password: string;
+  password: string;
 }
 
 export class UpdatePasswordDto {
   @IsNotEmpty()
   @ApiProperty()
   newPassword: string;
+
+  @IsNotEmpty()
+  @ApiProperty()
   oldPassowrd: string;
 }
