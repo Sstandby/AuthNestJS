@@ -1,5 +1,15 @@
-import { IsInt, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+
+export class LoginUserDto {
+  @ApiProperty()
+  @IsNotEmpty()
+  readonly login: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  readonly password: string;
+}
 
 export class CreateUserDto {
   @IsInt()
@@ -12,18 +22,18 @@ export class CreateUserDto {
   @ApiProperty({
     description: 'username del usuario registrado.',
   })
-  readonly username: string;
+  readonly name: string;
 
   @IsString()
   @ApiProperty({
     description: 'Crear password del usuario registrado.',
   })
   readonly password: string;
+}
 
-  @IsString()
-  @ApiProperty({
-    description: 'Rol de acceso a rutas',
-    enum: ['admin', 'user'],
-  })
-  readonly roles: string;
+export class UpdatePasswordDto {
+  @IsNotEmpty()
+  @ApiProperty()
+  newPassword: string;
+  oldPassowrd: string;
 }
